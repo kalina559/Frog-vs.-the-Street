@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/sounds">
+        <file>switch.wav</file>
+        <file>start.wav</file>
+        <file>shot.wav</file>
+        <file>klik.wav</file>
+        <file>death.wav</file>
+        <file>wrong.mp3</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>truck.png</file>
+        <file>taxi.png</file>
+        <file>przejechana1.png</file>
+        <file>przejechana.png</file>
+        <file>police1.png</file>
+        <file>police.png</file>
+        <file>opcja3.png</file>
+        <file>opcja2.png</file>
+        <file>opcja1.png</file>
+        <file>odliczanie3.png</file>
+        <file>odliczanie2.png</file>
+        <file>odliczanie1.png</file>
+        <file>menupauzy.png</file>
+        <file>menukoniec.png</file>
+        <file>menu.png</file>
+        <file>life3.png</file>
+        <file>life2.png</file>
+        <file>life1.png</file>
+        <file>life.png</file>
+        <file>hotrod.png</file>
+        <file>bike.png</file>
+        <file>zaba_gotowa.png</file>
+        <file>tlopaint.png</file>
+        <file>tlożaba.png</file>
+        <file>zaba.png</file>
+        <file>zaba1.png</file>
+    </qresource>
+</RCC>
