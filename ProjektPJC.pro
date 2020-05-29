@@ -11,7 +11,6 @@ CONFIG += c++14
 
 SOURCES += \
         Frog.cpp \
-        Interface.cpp \
         MainWindow.cpp \
         main.cpp
 
@@ -20,5 +19,4 @@ RESOURCES += \
 
 HEADERS += \
     Frog.h \
-    Interface.h \
     MainWindow.h

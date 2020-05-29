@@ -7,7 +7,6 @@ Frog::Frog(MainWindow * game): mainWindow(game)
 {
     this->setPixmap(QPixmap(":/images/zaba_gotowa.png"));
     this->setPos(388,567);
-    //this->setData(0, "frog");    //this data allows to check whether MainWindow::menu.get() is visible on the scene
     this->setFlag(QGraphicsItem::ItemIsFocusable);
     this->setFocus();
 
@@ -19,14 +18,15 @@ Frog::~Frog()
     std::cout<<"frog has been deleted"<<std::endl;
 }
 
-void Frog::keyPressEvent(QKeyEvent *event)
+void Frog::keyPressEvent(QKeyEvent *event)   // controls
 {
     if(!event->isAutoRepeat())
     {
         if(!(mainWindow->isItemVisible(MainWindow::itemType::menuStart) ||
-             mainWindow->isItemVisible(MainWindow::itemType::menuPause)))    //controls outside the MainWindow::menu.get()
+             mainWindow->isItemVisible(MainWindow::itemType::menuPause)))    //controls outside the menu
         {
-            switch (event->key()) {
+            switch (event->key())
+            {
             case Qt::Key_Left:
                 if(pos().x() > 24)
                     setPos(x() - 24, y());
@@ -35,7 +35,7 @@ void Frog::keyPressEvent(QKeyEvent *event)
             case Qt::Key_Right:
                 if(pos().x() < 755)
                     setPos(x() + 24, y());
-                    break;
+                break;
 
             case Qt::Key_Up:
                 if(pos().y() > 0)
@@ -53,7 +53,8 @@ void Frog::keyPressEvent(QKeyEvent *event)
         }
         else  //  controls in the menu
         {
-            switch (event->key()) {
+            switch (event->key())
+            {
             case Qt::Key_Up:
                 mainWindow->moveCursor(MainWindow::direction::up);
                 break;
@@ -65,7 +66,41 @@ void Frog::keyPressEvent(QKeyEvent *event)
                 mainWindow->removeMenu();
                 break;
             case Qt::Key_Return:
-                mainWindow->removeMenu();
+                if(mainWindow->isItemVisible(MainWindow::itemType::menuStart))
+                {
+                    mainWindow->removeMenu();
+                    switch(mainWindow->getCursorPosition())
+                    {
+                    case 1:
+                        //start
+                        break;
+                    case 2:
+                        //best scores
+                        break;
+                    case 3:
+                        //exit
+                        mainWindow->close();
+                        break;
+                    }
+                }
+                else if(mainWindow->isItemVisible(MainWindow::itemType::menuPause))
+                {
+                    mainWindow->removeMenu();
+                    switch(mainWindow->getCursorPosition())
+                    {
+                    case 1:
+                        //resume game
+                        break;
+                    case 2:
+                        //return to main menu
+                        mainWindow->displayMenu(MainWindow::itemType::menuStart);
+                        break;
+                    case 3:
+                        //exit
+                        mainWindow->close();
+                        break;
+                    }
+                }
                 break;
             }
         }

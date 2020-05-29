@@ -1,0 +1,5 @@
+gill sans ultra bold condensed
+
+48 bez pogrubienia w kolejnych linijkach
+
+dokladnie obciete na gorze i dole, splaszczone do wysokosci 270 px w gimpie

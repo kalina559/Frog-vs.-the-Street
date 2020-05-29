@@ -1,17 +1,13 @@
 #include "MainWindow.h"
 #include<iostream>
-#include<Interface.h>       //do usuniecia
 
-std::unique_ptr<QGraphicsScene> MainWindow::scene = nullptr;
-//std::unique_ptr<Frog> MainWindow::frog = nullptr;
-std::unique_ptr<QGraphicsPixmapItem> MainWindow::menu = nullptr;
-std::unique_ptr<QGraphicsPixmapItem> MainWindow::menuCursor = nullptr;
+//std::unique_ptr<QGraphicsScene> MainWindow::scene = nullptr;
+//std::unique_ptr<QGraphicsPixmapItem> MainWindow::menu = nullptr;
+//std::unique_ptr<QGraphicsPixmapItem> MainWindow::menuCursor = nullptr;
 
 MainWindow::MainWindow()
 {
-    // create the scene
     scene = std::make_unique<QGraphicsScene>();
-    //frog = std::make_unique<Frog>();
     menu = std::make_unique<QGraphicsPixmapItem>();
     menuCursor = std::make_unique<QGraphicsPixmapItem>();
 
@@ -21,10 +17,6 @@ MainWindow::MainWindow()
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFixedSize(800, 600);
-    //scene->addItem(frog.get());
-
-    //frog->setFlag(QGraphicsItem::ItemIsFocusable);
-    //frog->setFocus();
 
     MainWindow::displayMenu(MainWindow::itemType::menuStart);
 }
@@ -48,26 +40,25 @@ void MainWindow::removeFromScene(QGraphicsPixmapItem *item)
 
 void MainWindow::displayMenu(MainWindow::itemType type)
 {
-    menuCursor->setPixmap(QPixmap(":/images/opcja2.png"));
-    menuCursor->setPos(400-menuCursor->pixmap().width()/2,135);
+    menuCursor->setPixmap(QPixmap(":/images/cursor.png"));
+    menuCursor->setPos(400 - menuCursor->pixmap().width() / 2, 150);
+    cursorPosition = 1;
 
     if(type == menuStart)
     {
-        MainWindow::menu.get()->setPixmap(QPixmap(":/images/menu.png"));
-        std::cout<<"ostatni"<<std::endl;
-        menu.get()->setPos(400 - menu.get()->pixmap().width()/2, 300- menu.get()->pixmap().height()/2);
+        MainWindow::menu.get()->setPixmap(QPixmap(":/images/menuStart.png"));
         menu.get()->setData(0,menuStart);
     }
     else if(type == menuPause)
     {
-        menu.get()->setPixmap(QPixmap(":/images/menupauzy.png"));
-        menu.get()->setPos(400 - menu.get()->pixmap().width()/2, 300- menu.get()->pixmap().height()/2);
+        menu.get()->setPixmap(QPixmap(":/images/menuPause.png"));
         menu.get()->setData(0,menuPause);
     }
     else
     {
         std::cout<<"nie pykło"<<std::endl;
     }    
+    menu->setPos(400 - menu->pixmap().width() / 2, 306 - menu->pixmap().height() / 2);
     addToScene(menu.get());
     addToScene(menuCursor.get());
 }
@@ -82,26 +73,27 @@ void MainWindow::moveCursor(MainWindow::direction dir)
 {
     if(dir == MainWindow::direction::up)
     {
-        if(menuCursor->y() == 135)
+        if(cursorPosition == 1)
         {
-            menuCursor->setPos(24, 365);
+            cursorPosition = 3;
         }
         else
         {
-            menuCursor->setY(menuCursor->y() - 115);
-        }
+            --cursorPosition;
+        }        
     }
     else
     {
-        if(menuCursor->y() == 365)
+        if(cursorPosition == 3)
         {
-            menuCursor->setPos(24, 135);
+            cursorPosition = 1;
         }
         else
         {
-            menuCursor->setY(menuCursor->y() + 115);
-        }
+            ++cursorPosition;
+        }        
     }
+    menuCursor->setY(45 + cursorPosition * 105);
 }
 
 bool MainWindow::isItemVisible(MainWindow::itemType itemsName)   //checks whether an item of a certain type is visible on the scene
@@ -114,5 +106,10 @@ bool MainWindow::isItemVisible(MainWindow::itemType itemsName)   //checks whethe
         }
     }
     return false;
+}
+
+int MainWindow::getCursorPosition()
+{
+    return cursorPosition;
 }
 
