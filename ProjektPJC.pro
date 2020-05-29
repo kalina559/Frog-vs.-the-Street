@@ -11,7 +11,9 @@ CONFIG += c++14
 
 SOURCES += \
         Frog.cpp \
+        Lane.cpp \
         MainWindow.cpp \
+        Vehicle.cpp \
         main.cpp
 
 RESOURCES += \
@@ -19,4 +21,6 @@ RESOURCES += \
 
 HEADERS += \
     Frog.h \
-    MainWindow.h
+    Lane.h \
+    MainWindow.h \
+    Vehicle.h

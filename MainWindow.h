@@ -17,6 +17,7 @@ private:
 public:
     enum itemType {menuStart, menuPause, menuEnd};
     enum direction {up, down};
+
     MainWindow();
     ~MainWindow();
     void startGame();

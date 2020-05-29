@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include<iostream>
-
+#include<Lane.h>
+#include<QObject>
 //std::unique_ptr<QGraphicsScene> MainWindow::scene = nullptr;
 //std::unique_ptr<QGraphicsPixmapItem> MainWindow::menu = nullptr;
 //std::unique_ptr<QGraphicsPixmapItem> MainWindow::menuCursor = nullptr;
@@ -19,6 +20,12 @@ MainWindow::MainWindow()
     setFixedSize(800, 600);
 
     MainWindow::displayMenu(MainWindow::itemType::menuStart);
+
+    auto pas = new Lane(this);
+    //scene->addItem(pas);
+    auto spawnTimer = new QTimer();        //usuniete
+    QObject::connect(spawnTimer,SIGNAL(timeout()),pas,SLOT(spawn()));
+    spawnTimer->start(3400);
 }
 
 MainWindow::~MainWindow()  //called when window is closed

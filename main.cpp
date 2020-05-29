@@ -2,6 +2,7 @@
 #include<MainWindow.h>
 #include<iostream>
 #include<Frog.h>
+#include<Lane.h>
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
 
     auto gra = new MainWindow();
     auto zaba = new Frog(gra);
+
     gra->setAttribute(Qt::WA_DeleteOnClose);
     gra->show();
     a.exec();
