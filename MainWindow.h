@@ -74,6 +74,8 @@ public:
 
     void LoadScores();
 
+    void saveScore();
+
 };
 
 #endif // MAINWINDOW_H

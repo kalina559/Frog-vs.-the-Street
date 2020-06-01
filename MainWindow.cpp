@@ -3,6 +3,7 @@
 #include<Lane.h>
 #include<QObject>
 #include<QMessageBox>
+#include<QInputDialog>
 
 std::unique_ptr<QTimer> MainWindow::timer = nullptr;
 std::unique_ptr<QTimer> MainWindow::spawnTimer = nullptr;
@@ -135,66 +136,102 @@ void MainWindow::increaseScore()
 
 void MainWindow::LoadScores()
 {
-    QFont f("Helvetica", 15, QFont::Bold);
-    score->setPos(50,-12);
-
     std::ifstream plik;                //odczyt najlepszych wyników
     plik.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt");
-    int firstScore;
-    int secondScore;
-    int thirdScore;
+    int score = 0;
 
-    std::string firstName;
-    std::string secondName;
-    std::string thirdName;
+    std::string name;
 
-    plik>>firstName;
-    plik>>firstScore;
-    plik>>secondName;
-    plik>>secondScore;
-    plik>>thirdName;
-    plik>>thirdScore;
+    QList<int> scores;
+    QList<std::string> names;
 
-//    if(this->points>firstScore)
-//    {
-//        thirdScore = secondScore;
-//        thirdName = secondName;
-//        secondScore = firstScore;
-//        secondName = firstName;
-//        firstScore  =this->points;
-//        firstName =
-//    }
-//    else if(this->points>secondScore)
-//    {
-//        thirdScore = secondScore;
-//        secondScore = this->points;
-//    }
-//    else if(this->points>thirdScore)
-//    {
-//        thirdScore = this->points;
-//    }
-
-
+    while(plik >> name >> score)
+    {
+        scores.push_back(score);
+        names.push_back(name);
+    }
+    for(int i = 0; i < scores.size(); ++i)
+    {
+        std::cout<<names[i]<<scores[i]<<std::endl;
+    }
+    QString text = nullptr;
+    while(!scores.empty())
+    {
+        text += QString::fromStdString(names.front()) + " " + QString::number(scores.front()) + "\n";
+        scores.pop_front();
+        names.pop_front();
+    }
     QMessageBox msg;
     msg.setText("Best scores: ");
-    msg.setInformativeText(QString::fromStdString(firstName) + " " + QString::number(thirdScore) + "\n"
-                           + QString::fromStdString(secondName) + " " + QString::number(secondScore) + "\n"
-                           + QString::fromStdString(thirdName) + " " + QString::number(firstScore) + "\n" );
+    msg.setInformativeText(text);
     msg.exec();
 
     plik.close();
     plik.clear();
-//    std::ofstream p;       //zapis do pliku
-//    p.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt", std::ofstream::out|std::ofstream::trunc);
-//    p<<firstScore<<std::endl;
-//    p<<secondScore<<std::endl;
-//    p<<thirdScore<<std::endl;
-    //    plik.close();
 }
 
 void MainWindow::saveScore()
 {
+    std::ifstream plik;                //odczyt najlepszych wyników
+    plik.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt");
 
+    int score = 0;
+
+    std::string name;
+
+    QList<int> scores;
+    QList<std::string> names;
+
+    while(plik >> name >> score)
+    {
+        scores.push_back(score);
+        names.push_back(name);
+    }
+
+    if(points > scores.back())
+    {
+
+        QString playerName = (QInputDialog::getText(this,"Save","Please write your name"));
+
+
+        for(int i = 0; i < scores.size(); ++i)
+        {
+            std::cout<<names[i]<<scores[i]<<std::endl;
+            if(this->points > scores[i])
+            {
+                names.insert(i, playerName.toStdString());
+                scores.insert(i, this->points);
+                break;
+            }
+        }
+
+        QString text = nullptr;
+
+        for(int i = 0; i < scores.size(); ++i)
+        {
+            text += QString::fromStdString(names[i]) + " " + QString::number(scores[i]) + "\n";
+        }
+
+        QMessageBox msg;
+        msg.setText("Best scores: ");
+        msg.setInformativeText(text);
+        msg.exec();
+
+        plik.close();
+        plik.clear();
+        std::ofstream p;       //zapis do pliku
+        p.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt", std::ofstream::out|std::ofstream::trunc);
+
+        while(!scores.empty())
+        {
+            p<<names.front()<<std::endl;
+            p<<scores.front()<<std::endl;
+            scores.pop_front();
+            names.pop_front();
+        }
+
+        plik.close();
+        }
 }
 
 

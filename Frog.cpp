@@ -172,6 +172,7 @@ void Frog::collisionDetection()
     else if(data(1) == dead && lives == 0 &&
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 2000)
     {
+        mainWindow->saveScore();
         restart();
     }
 
@@ -181,6 +182,7 @@ void Frog::restart()
 {
     lives = 3;
     hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
+    mainWindow->resetScore();
     setPixmap(QPixmap(":/images/zaba_gotowa.png"));
     this->setData(1,alive);
     setPos(388,567);
