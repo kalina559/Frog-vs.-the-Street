@@ -2,16 +2,27 @@
 #define FROG_H
 #include<QGraphicsPixmapItem>
 #include<MainWindow.h>
-class Frog: public QGraphicsPixmapItem
+class Frog: public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
 private:
     MainWindow * mainWindow;
+    long long timeOfDeath;
+    bool paused;
     int lives;  //number of lives, max 3
-    //QGraphicsPixmapItem * menu = new QGraphicsPixmapItem;  // pixmap item odpowiedzialny za różne menu
+    std::unique_ptr<QGraphicsPixmapItem> hearts;
+
+    std::unique_ptr<QTimer> collDetectionTimer;
+    void restart();
+    void levelUp();
+    enum state { dead, alive};
 public:
     Frog(MainWindow *);
     ~Frog();
     void keyPressEvent(QKeyEvent * event); //sterowanie żabą i w menu
+    void decreaseLife();
+public slots:
+    void collisionDetection();
 };
 
 #endif // FROG_H

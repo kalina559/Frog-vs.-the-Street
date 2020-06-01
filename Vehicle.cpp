@@ -1,33 +1,49 @@
 #include "Vehicle.h"
-#include<QTimer>
 #include<iostream>
+#include<stdlib.h>
 
-Vehicle::Vehicle(Lane * lane): lane(lane)
+Vehicle::Vehicle(MainWindow * main, int position, int vel): mainWindow(main)   //when there's no car on the lane yet
 {
     std::cout<<"vehicle constr"<<std::endl;
-    setPixmap(QPixmap(":/images/hotrod.png"));
+    auto vehicleType=rand()%20;
 
-    velocity = 10;   // do zmiany
+    //rysowanie pojazdu (w zależności od pasa)
+    if(vehicleType < 7)
+        setPixmap(QPixmap(":/images/hotrod.png"));
+    else if(vehicleType < 11)
+        setPixmap(QPixmap(":/images/taxi.png"));
+    else if(vehicleType < 13)
+        setPixmap(QPixmap(":/images/police1.png"));
+    else if(vehicleType < 15)
+        setPixmap(QPixmap(":/images/police.png"));
+    else if(vehicleType < 17)
+        setPixmap(QPixmap(":/images/truck.png"));
+    else if(vehicleType < 20)
+        setPixmap(QPixmap(":/images/bike.png"));
 
-    timer = new QTimer;   //deleted in ~Vehicle()
-    setPos(800, 50);
-    connect(timer,SIGNAL(timeout()),this,SLOT(move()));
-    timer->start(50);
+    this->setData(0,MainWindow::itemType::vehicle);
+
+    velocity = vel;
+
+    setPos(800, position - pixmap().height() / 2);
+    connect(MainWindow::timer.get(),SIGNAL(timeout()),this,SLOT(move()));
 }
 
 Vehicle::~Vehicle()
 {
     std::cout<<"usunieto furke"<<std::endl;
-    delete(this->timer);
+
 }
 
 void Vehicle::move()
 {
-    std::cout<<"pos:"<<x()<<std::endl;
-    setPos(x() - velocity, y());
-
-    if(x() < -(pixmap().width()+ 10))
+    if(!mainWindow->isItemVisible(MainWindow::itemType::menuPause))
     {
-        delete(this);
+        setPos(x() - velocity, y());
+
+//        if(x() < -(pixmap().width()))
+//        {
+//            delete(this);
+//        }
     }
 }

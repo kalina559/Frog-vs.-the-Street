@@ -5,30 +5,75 @@
 #include<QTimer>
 #include<QGraphicsPixmapItem>
 #include<memory>
+#include<QGraphicsTextItem>
+#include<fstream>
+
+
 
 class MainWindow : public QGraphicsView
 {
 private:
-    /*static*/ std::unique_ptr<QGraphicsScene> scene;
-    /*static*/ std::unique_ptr<QGraphicsPixmapItem> menu;
-    /*static*/ std::unique_ptr<QGraphicsPixmapItem> menuCursor;
     int cursorPosition;
+    int points;
+    int level;
+    std::unique_ptr<QGraphicsScene> scene;
+    std::unique_ptr<QGraphicsPixmapItem> menu;
+    std::unique_ptr<QGraphicsPixmapItem> menuCursor;
+    std::unique_ptr<QGraphicsTextItem> score;
 
 public:
-    enum itemType {menuStart, menuPause, menuEnd};
+    enum itemType {menuStart, menuPause, menuEnd, frog, vehicle};
     enum direction {up, down};
 
+    static std::unique_ptr<QTimer> timer;  // shared timer for Vehicles' movement
+    static std::unique_ptr<QTimer> spawnTimer;  // shared timer for Vehicles' spawning
+
+
     MainWindow();
+
     ~MainWindow();
+
     void startGame();
-    void addToScene(QGraphicsPixmapItem *);      //allows to add graphics items to the scene
-    void removeFromScene(QGraphicsPixmapItem *);
+
+    void addToScene(QGraphicsPixmapItem * item) //allows to add graphics items to the scene
+    {
+        scene->addItem(item);
+    }
+    void addToScene(QGraphicsTextItem * item)
+    {
+        scene->addItem(item);
+    }
+
+    void removeFromScene(QGraphicsPixmapItem *item)
+    {
+        scene->removeItem(item);
+    }
+
     void displayMenu(MainWindow::itemType);
+
     void removeMenu();
+
     void moveCursor(MainWindow::direction);
+
     bool isItemVisible(MainWindow::itemType);
+
     void restartGame();  //po kliknięciu 'powtórz' w menu pauzy/końcowym
-    int getCursorPosition();
+
+    int getCursorPosition()
+    {
+        return cursorPosition;
+    }
+
+    void increaseScore();
+
+    void resetScore()
+    {
+        points = 0;
+        score.get()->setPlainText(QString("WYNIK: ") + QString::number(points));
+    }
+
+    void LoadScores();
+
 };
 
 #endif // MAINWINDOW_H

@@ -2,12 +2,14 @@
 #include<iostream>
 #include<Lane.h>
 #include<QObject>
-//std::unique_ptr<QGraphicsScene> MainWindow::scene = nullptr;
-//std::unique_ptr<QGraphicsPixmapItem> MainWindow::menu = nullptr;
-//std::unique_ptr<QGraphicsPixmapItem> MainWindow::menuCursor = nullptr;
+#include<QMessageBox>
+
+std::unique_ptr<QTimer> MainWindow::timer = nullptr;
+std::unique_ptr<QTimer> MainWindow::spawnTimer = nullptr;
 
 MainWindow::MainWindow()
 {
+    srand( static_cast<unsigned int>(time(nullptr)));
     scene = std::make_unique<QGraphicsScene>();
     menu = std::make_unique<QGraphicsPixmapItem>();
     menuCursor = std::make_unique<QGraphicsPixmapItem>();
@@ -21,28 +23,36 @@ MainWindow::MainWindow()
 
     MainWindow::displayMenu(MainWindow::itemType::menuStart);
 
-    auto pas = new Lane(this);
-    //scene->addItem(pas);
-    auto spawnTimer = new QTimer();        //usuniete
-    QObject::connect(spawnTimer,SIGNAL(timeout()),pas,SLOT(spawn()));
-    spawnTimer->start(3400);
+
+    auto firstLane = new Lane(this, 93);   //adding all the lanes
+    addToScene(firstLane);
+    auto secondLane = new Lane(this, 164);
+    addToScene(secondLane);
+
+    timer = std::make_unique<QTimer>();
+    timer.get()->start(50);    
+
+    spawnTimer = std::make_unique<QTimer>();
+    QObject::connect(spawnTimer.get(),SIGNAL(timeout()),firstLane,SLOT(spawn()));    //every lane uses the same timer to spawn cars
+    QObject::connect(spawnTimer.get(),SIGNAL(timeout()),secondLane,SLOT(spawn()));
+    spawnTimer.get()->start(3400);
+
+    points = 0;
+    level = 1;
+
+    score = std::make_unique<QGraphicsTextItem>();
+    QFont f("Helvetica",30,QFont::Bold);
+    score.get()->setFont(f);
+    score.get()->setPlainText(QString("WYNIK: ") + QString::number(points));
+    score.get()->setDefaultTextColor(Qt::red);
+    score.get()->setPos(280,-12);
+    addToScene(score.get());
 }
 
 MainWindow::~MainWindow()  //called when window is closed
 {
+
     std::cout << "~MainWindow has been called" << std::endl;
-}
-
-void MainWindow::addToScene(QGraphicsPixmapItem * item)
-{
-    std::cout<<"addtoscene"<<std::endl;
-    scene->addItem(item);
-}
-
-void MainWindow::removeFromScene(QGraphicsPixmapItem *item)
-{
-    std::cout<<"removefromscene"<<std::endl;
-    scene->removeItem(item);
 }
 
 void MainWindow::displayMenu(MainWindow::itemType type)
@@ -115,8 +125,76 @@ bool MainWindow::isItemVisible(MainWindow::itemType itemsName)   //checks whethe
     return false;
 }
 
-int MainWindow::getCursorPosition()
+void MainWindow::increaseScore()
 {
-    return cursorPosition;
+    points += level * 100;
+    ++level;
+    score.get()->setPlainText(QString("WYNIK: ") + QString::number(points));
+    score->setPos(280,-12);
 }
+
+void MainWindow::LoadScores()
+{
+    QFont f("Helvetica", 15, QFont::Bold);
+    score->setPos(50,-12);
+
+    std::ifstream plik;                //odczyt najlepszych wyników
+    plik.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt");
+    int firstScore;
+    int secondScore;
+    int thirdScore;
+
+    std::string firstName;
+    std::string secondName;
+    std::string thirdName;
+
+    plik>>firstName;
+    plik>>firstScore;
+    plik>>secondName;
+    plik>>secondScore;
+    plik>>thirdName;
+    plik>>thirdScore;
+
+//    if(this->points>firstScore)
+//    {
+//        thirdScore = secondScore;
+//        thirdName = secondName;
+//        secondScore = firstScore;
+//        secondName = firstName;
+//        firstScore  =this->points;
+//        firstName =
+//    }
+//    else if(this->points>secondScore)
+//    {
+//        thirdScore = secondScore;
+//        secondScore = this->points;
+//    }
+//    else if(this->points>thirdScore)
+//    {
+//        thirdScore = this->points;
+//    }
+
+
+    QMessageBox msg;
+    msg.setText("Best scores: ");
+    msg.setInformativeText(QString::fromStdString(firstName) + " " + QString::number(thirdScore) + "\n"
+                           + QString::fromStdString(secondName) + " " + QString::number(secondScore) + "\n"
+                           + QString::fromStdString(thirdName) + " " + QString::number(firstScore) + "\n" );
+    msg.exec();
+
+    plik.close();
+    plik.clear();
+//    std::ofstream p;       //zapis do pliku
+//    p.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt", std::ofstream::out|std::ofstream::trunc);
+//    p<<firstScore<<std::endl;
+//    p<<secondScore<<std::endl;
+//    p<<thirdScore<<std::endl;
+    //    plik.close();
+}
+
+void MainWindow::saveScore()
+{
+
+}
+
 
