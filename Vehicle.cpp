@@ -2,9 +2,9 @@
 #include<iostream>
 #include<stdlib.h>
 
-Vehicle::Vehicle(MainWindow * main, int position, int vel): mainWindow(main)   //when there's no car on the lane yet
+Vehicle::Vehicle(MainWindow * main, MainWindow::laneDirection dir, int position, int vel):  velocity(vel), direction(dir), mainWindow(main)
 {
-    std::cout<<"vehicle constr"<<std::endl;
+    //std::cout<<"vehicle constr"<< pixmap().width() <<std::endl;
     auto vehicleType=rand()%20;
 
     //rysowanie pojazdu (w zależności od pasa)
@@ -23,15 +23,23 @@ Vehicle::Vehicle(MainWindow * main, int position, int vel): mainWindow(main)   /
 
     this->setData(0,MainWindow::itemType::vehicle);
 
-    velocity = vel;
-
-    setPos(800, position - pixmap().height() / 2);
+    switch(direction)
+    {
+    case MainWindow::laneDirection::left:
+        setPos(800, position - pixmap().height() / 2);
+        break;
+    case MainWindow::laneDirection::right:
+        setPos(- pixmap().width(), position - pixmap().height() / 2);
+        setTransformOriginPoint(pixmap().width()/2,pixmap().height()/2);
+        setRotation(180);
+        break;
+    }
     connect(MainWindow::timer.get(),SIGNAL(timeout()),this,SLOT(move()));
 }
 
 Vehicle::~Vehicle()
 {
-    std::cout<<"usunieto furke"<<std::endl;
+    //std::cout<<"usunieto furke"<<std::endl;
 
 }
 
@@ -39,11 +47,14 @@ void Vehicle::move()
 {
     if(!mainWindow->isItemVisible(MainWindow::itemType::menuPause))
     {
-        setPos(x() - velocity, y());
-
-//        if(x() < -(pixmap().width()))
-//        {
-//            delete(this);
-//        }
+        switch(direction)
+        {
+        case MainWindow::laneDirection::left:
+            setPos(x() - velocity, y());
+            break;
+        case MainWindow::laneDirection::right:
+            setPos(x() + velocity, y());
+            break;
+        }
     }
 }

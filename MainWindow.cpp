@@ -6,7 +6,6 @@
 #include<QInputDialog>
 
 std::unique_ptr<QTimer> MainWindow::timer = nullptr;
-std::unique_ptr<QTimer> MainWindow::spawnTimer = nullptr;
 
 MainWindow::MainWindow()
 {
@@ -25,18 +24,27 @@ MainWindow::MainWindow()
     MainWindow::displayMenu(MainWindow::itemType::menuStart);
 
 
-    auto firstLane = new Lane(this, 93);   //adding all the lanes
+    spawnTimer = new QTimer();
+
+    auto firstLane = new Lane(this, MainWindow::laneDirection::left, 93);   //adding all the lanes
     addToScene(firstLane);
-    auto secondLane = new Lane(this, 164);
+    auto secondLane = new Lane(this, MainWindow::laneDirection::left, 164);
     addToScene(secondLane);
+    auto thirdLane = new Lane(this, MainWindow::laneDirection::left, 235);
+    addToScene(thirdLane);
+//    auto fourthLane = new Lane(this, MainWindow::laneDirection::right, 365);   //adding all the lanes
+//    addToScene(fourthLane);
+//    auto fifthLane = new Lane(this, MainWindow::laneDirection::right, 437);
+//    addToScene(fifthLane);
+//    auto sixthLane = new Lane(this, MainWindow::laneDirection::right, 505);
+//    addToScene(sixthLane);
+
+
+    //spawnTimer->start(3000);
+
 
     timer = std::make_unique<QTimer>();
     timer.get()->start(50);    
-
-    spawnTimer = std::make_unique<QTimer>();
-    QObject::connect(spawnTimer.get(),SIGNAL(timeout()),firstLane,SLOT(spawn()));    //every lane uses the same timer to spawn cars
-    QObject::connect(spawnTimer.get(),SIGNAL(timeout()),secondLane,SLOT(spawn()));
-    spawnTimer.get()->start(3400);
 
     points = 0;
     level = 1;
@@ -52,7 +60,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()  //called when window is closed
 {
-
+    delete(spawnTimer);
     std::cout << "~MainWindow has been called" << std::endl;
 }
 
@@ -126,6 +134,12 @@ bool MainWindow::isItemVisible(MainWindow::itemType itemsName)   //checks whethe
     return false;
 }
 
+void MainWindow::resetLevel()
+{
+    level = 1;
+
+}
+
 void MainWindow::increaseScore()
 {
     points += level * 100;
@@ -194,20 +208,22 @@ void MainWindow::saveScore()
         QString playerName = (QInputDialog::getText(this,"Save","Please write your name"));
 
 
-        for(int i = 0; i < scores.size(); ++i)
+        for(int i = 0; i <10; ++i)
         {
             std::cout<<names[i]<<scores[i]<<std::endl;
             if(this->points > scores[i])
             {
                 names.insert(i, playerName.toStdString());
                 scores.insert(i, this->points);
+                scores.pop_back();
+                names.pop_back();
                 break;
             }
         }
 
         QString text = nullptr;
 
-        for(int i = 0; i < scores.size(); ++i)
+        for(int i = 0; i < 10; ++i)
         {
             text += QString::fromStdString(names[i]) + " " + QString::number(scores[i]) + "\n";
         }

@@ -8,21 +8,29 @@ class Lane: public QObject, public QGraphicsPixmapItem  /*Manages all vehicles o
                                                         Inherits from QGraphicsPixmapItem so that it can be
                                                         added to scene and later deleted*/
 {
+
+
+private:
     Q_OBJECT
-    MainWindow * mainWindow;
+    static MainWindow * mainWindow;
+    //static QTimer * spawnTimer;  // shared timer for Vehicles' spawning
     int lanePosition;
     QList<Vehicle *> currentVehicles;
     std::unique_ptr<QTimer> deleteTimer;
-    int minSpeed;
-    int randomSpeed();
-
+    static int minSpeed;
+    static int maxSpeed;
+    int randomSpeed(int, int);
+    MainWindow::laneDirection direction;
 public:
-    Lane(MainWindow *, int);
+
+    Lane(MainWindow *, MainWindow::laneDirection, int);
     ~Lane();
     int getLanePosition()
     {
         return lanePosition;
     }
+    static void increaseDifficulty();
+    static void resetDifficulty();
 
 public slots:
     void spawn();

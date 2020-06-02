@@ -5,6 +5,7 @@
 #include<Vehicle.h>
 #include<QDateTime>
 #include<qstring.h>
+#include<Lane.h>
 
 Frog::Frog(MainWindow * game): mainWindow(game)
 {
@@ -99,6 +100,7 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                     case 2:
                         //best scores
                         mainWindow->LoadScores();
+                        mainWindow->displayMenu(MainWindow::menuStart);
                         break;
                     case 3:
                         //exit
@@ -169,13 +171,19 @@ void Frog::collisionDetection()
         this->setData(1,alive);
         setPos(388,567);
     }
-    else if(data(1) == dead && lives == 0 &&
-            QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 2000)
+    else if(lives == 0 &&
+            QDateTime::currentMSecsSinceEpoch() - timeOfDeath < 70)      /* resetting difficulty before spawning the frog to
+                                                                         allow the slowed down cars to fill the scene*/
     {
+        std::cout<<"reset diff"<<std::endl;
+        Lane::resetDifficulty();
+    }
+    else if(data(1) == dead && lives == 0 &&
+            QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 3000)
+    {        
         mainWindow->saveScore();
         restart();
     }
-
 }
 
 void Frog::restart()
@@ -183,13 +191,19 @@ void Frog::restart()
     lives = 3;
     hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
     mainWindow->resetScore();
+
+    mainWindow->resetLevel();
     setPixmap(QPixmap(":/images/zaba_gotowa.png"));
-    this->setData(1,alive);
+
     setPos(388,567);
+    long long time = QDateTime::currentMSecsSinceEpoch();
+    this->setData(1,alive);
+
 }
 
 void Frog::levelUp()
 {
     mainWindow->increaseScore();
+    Lane::increaseDifficulty();
     setPos(388,567);
 }

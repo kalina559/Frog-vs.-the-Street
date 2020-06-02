@@ -24,9 +24,11 @@ private:
 public:
     enum itemType {menuStart, menuPause, menuEnd, frog, vehicle};
     enum direction {up, down};
+    enum laneDirection {left, right};
 
     static std::unique_ptr<QTimer> timer;  // shared timer for Vehicles' movement
-    static std::unique_ptr<QTimer> spawnTimer;  // shared timer for Vehicles' spawning
+    QTimer * spawnTimer = nullptr;
+    //static std::shared_ptr<QTimer> spawnTimer;  // shared timer for Vehicles' spawning
 
 
     MainWindow();
@@ -57,7 +59,7 @@ public:
 
     bool isItemVisible(MainWindow::itemType);
 
-    void restartGame();  //po kliknięciu 'powtórz' w menu pauzy/końcowym
+    void resetLevel();  //po kliknięciu 'powtórz' w menu pauzy/końcowym
 
     int getCursorPosition()
     {

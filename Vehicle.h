@@ -1,7 +1,6 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 #include<QGraphicsPixmapItem>
-//#include<Lane.h>
 #include<MainWindow.h>
 #include<QObject>
 
@@ -9,11 +8,12 @@ class Vehicle: public QObject, public QGraphicsPixmapItem     //inherits from QO
 {
     Q_OBJECT
     int velocity;
+    MainWindow::laneDirection direction;
     //Lane * lane;
     int position;
     MainWindow * mainWindow;
 public:
-    Vehicle(MainWindow *, int, int);
+    Vehicle(MainWindow *, MainWindow::laneDirection, int, int);
     ~Vehicle();
     int getVehicleSpeed()
     {
