@@ -5,11 +5,10 @@
 #include <stdlib.h>
 #include<time.h>
 
-//QTimer * Lane::spawnTimer = nullptr;
 MainWindow * Lane::mainWindow = nullptr;
 int Lane::minSpeed = 0;
 int Lane::maxSpeed = 0;
-Lane::Lane(MainWindow * game, MainWindow::laneDirection dir, int lane): /*mainWindow(game),*/ lanePosition(lane), direction(dir)
+Lane::Lane(MainWindow * game, MainWindow::laneDirection dir, int lane): lanePosition(lane), direction(dir)
 {
     mainWindow = game;
     minSpeed = 5;
@@ -19,13 +18,7 @@ Lane::Lane(MainWindow * game, MainWindow::laneDirection dir, int lane): /*mainWi
     deleteTimer.get()->start(50);
 
     QObject::connect(mainWindow->spawnTimer,SIGNAL(timeout()),this,SLOT(spawn()));    //every lane uses the same timer to spawn cars
-    //spawnTimer->start((9100 / minSpeed) + lane); // to make spawning on different lanes a bit asynchronic
     mainWindow->spawnTimer->start(( 9100* 2 / minSpeed));
-}
-
-Lane::~Lane()
-{
-    std::cout<<"usunieto lane"<<std::endl;
 }
 
 void Lane::increaseDifficulty()
@@ -33,9 +26,6 @@ void Lane::increaseDifficulty()
     ++minSpeed;
     ++maxSpeed;
     mainWindow->spawnTimer->setInterval(( 9100 * 2 / (minSpeed)));
-
-    std::cout<<"increaseDiff"<< minSpeed << " " << maxSpeed << std::endl;
-
 }
 
 void Lane::resetDifficulty()
@@ -80,17 +70,11 @@ void Lane::deleteOutOfScene()
             }
             break;
         }
-
-
-
-        //std::cout<<"dlugosc wektora fur: "<< currentVehicles.size()<<std::endl;
-
     }
 }
 
 int Lane::randomSpeed(int minSpeed, int maxSpeed)
 {
-
     double max;
     if(currentVehicles.size() == 0)
     {
@@ -111,15 +95,11 @@ int Lane::randomSpeed(int minSpeed, int maxSpeed)
     }
     if(int(max) < minSpeed) //to avoid errors with rand()
     {
-        std::cout<<"wait on lane "<< lanePosition <<std::endl;
-        return /*currentVehicles.back()->getVehicleSpeed()*/ -1;
-
+        return -1; //when this function returns -1, Lane::spawn() waits for one interval
     }
     else if(int(max) > maxSpeed)
     {
-        std::cout<<"zmieniono na max"<<std::endl;
         max = maxSpeed;
-
     }
     return rand() % (int(max) - minSpeed + 1) + minSpeed;
 }

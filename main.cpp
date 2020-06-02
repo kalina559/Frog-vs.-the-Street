@@ -9,11 +9,11 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    auto gra = new MainWindow();
-    auto zaba = new Frog(gra);
+    auto gameWindow = new MainWindow();
+    auto player = new Frog(gameWindow);
 
-    gra->setAttribute(Qt::WA_DeleteOnClose);
-    gra->show();
+    gameWindow->setAttribute(Qt::WA_DeleteOnClose);
+    gameWindow->show();
     a.exec();
 
     return 0;

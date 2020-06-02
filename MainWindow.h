@@ -8,11 +8,8 @@
 #include<QGraphicsTextItem>
 #include<fstream>
 
-
-
 class MainWindow : public QGraphicsView
 {
-private:
     int cursorPosition;
     int points;
     int level;
@@ -28,8 +25,6 @@ public:
 
     static std::unique_ptr<QTimer> timer;  // shared timer for Vehicles' movement
     QTimer * spawnTimer = nullptr;
-    //static std::shared_ptr<QTimer> spawnTimer;  // shared timer for Vehicles' spawning
-
 
     MainWindow();
 
@@ -53,13 +48,20 @@ public:
 
     void displayMenu(MainWindow::itemType);
 
-    void removeMenu();
+    void removeMenu()
+    {
+        scene->removeItem(menu.get());
+        scene->removeItem(menuCursor.get());
+    }
 
     void moveCursor(MainWindow::direction);
 
     bool isItemVisible(MainWindow::itemType);
 
-    void resetLevel();  //po kliknięciu 'powtórz' w menu pauzy/końcowym
+    void resetLevel() //po kliknięciu 'powtórz' w menu pauzy/końcowym
+    {
+        level = 1;
+    }
 
     int getCursorPosition()
     {

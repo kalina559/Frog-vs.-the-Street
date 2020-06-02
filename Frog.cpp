@@ -31,11 +31,6 @@ Frog::Frog(MainWindow * game): mainWindow(game)
     paused = false;
 }
 
-Frog::~Frog()
-{
-    std::cout<<"frog has been deleted"<<std::endl;
-}
-
 void Frog::keyPressEvent(QKeyEvent *event)   // controls
 {
     if(!event->isAutoRepeat())
@@ -51,19 +46,16 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                 if(pos().x() > 24)
                     setPos(x() - 24, y());
                 break;
-
             case Qt::Key_Right:
                 if(pos().x() < 755)
                     setPos(x() + 24, y());
                 break;
-
             case Qt::Key_Up:
                 if(pos().y() > 0)
                     setPos(x(), y() - 24);
                 if(int(pos().y()) < 0)
                     levelUp();
                 break;
-
             case Qt::Key_Down:
                 if(pos().y() < 567)
                     setPos(x(), y() + 24);
@@ -74,14 +66,13 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                 break;
             }
         }
-        else  //  controls in the menu
+        else  //controls in the menu
         {
             switch (event->key())
             {
             case Qt::Key_Up:
                 mainWindow->moveCursor(MainWindow::direction::up);
                 break;
-
             case Qt::Key_Down:
                 mainWindow->moveCursor(MainWindow::direction::down);
                 break;
@@ -94,16 +85,13 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                     mainWindow->removeMenu();
                     switch(mainWindow->getCursorPosition())
                     {
-                    case 1:
-                        //start
+                    case 1: //start
                         break;
-                    case 2:
-                        //best scores
+                    case 2: //best scores
                         mainWindow->LoadScores();
                         mainWindow->displayMenu(MainWindow::menuStart);
                         break;
-                    case 3:
-                        //exit
+                    case 3: //exit
                         mainWindow->close();
                         break;
                     }
@@ -113,17 +101,33 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                     mainWindow->removeMenu();
                     switch(mainWindow->getCursorPosition())
                     {
-                    case 1:
-                        //resume game
+                    case 1: //resume game
                         break;
-                    case 2:
-                        //return to main menu
+                    case 2: //return to main menu
                         mainWindow->displayMenu(MainWindow::itemType::menuStart);
                         restart();
                         mainWindow->resetScore();
                         break;
-                    case 3:
-                        //exit
+                    case 3: //exit
+                        mainWindow->close();
+                        break;
+                    }
+                }
+                else if(mainWindow->isItemVisible(MainWindow::itemType::menuEnd))
+                {
+                    mainWindow->removeMenu();
+                    switch(mainWindow->getCursorPosition())
+                    {
+                    case 1: //play again
+                        restart();
+                        mainWindow->resetScore();
+                        break;
+                    case 2: //return to main menu
+                        mainWindow->displayMenu(MainWindow::itemType::menuStart);
+                        restart();
+                        mainWindow->resetScore();
+                        break;
+                    case 3: //exit
                         mainWindow->close();
                         break;
                     }
@@ -136,9 +140,7 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
 
 void Frog::decreaseLife()
 {
-
     QString path;
-
     path = QString::fromStdString(":/images/life") + QString::number(lives) + QString::fromStdString(".png");
     hearts->setPixmap(QPixmap(path));
 }
@@ -154,13 +156,12 @@ void Frog::collisionDetection()
         {
             if(collidingItems[i]->data(0) == MainWindow::itemType::vehicle)
             {
-                this->setPos(this->x()-5, this->y());                    //po to żeby oś symetrii zdjecia byla w tym samym miejscu
+                this->setPos(this->x()-5, this->y()); // so make the new axis of symmetry match the previous pixmap's
                 this->setPixmap(QPixmap(":/images/przejechana.png"));
                 this->setData(1,dead);
                 timeOfDeath = QDateTime::currentMSecsSinceEpoch();
                 --lives;
                 decreaseLife();
-
             }
         }
     }
@@ -175,13 +176,13 @@ void Frog::collisionDetection()
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath < 70)      /* resetting difficulty before spawning the frog to
                                                                          allow the slowed down cars to fill the scene*/
     {
-        std::cout<<"reset diff"<<std::endl;
         Lane::resetDifficulty();
     }
     else if(data(1) == dead && lives == 0 &&
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 3000)
     {        
         mainWindow->saveScore();
+        mainWindow->displayMenu(MainWindow::itemType::menuEnd);
         restart();
     }
 }
@@ -191,14 +192,10 @@ void Frog::restart()
     lives = 3;
     hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
     mainWindow->resetScore();
-
     mainWindow->resetLevel();
     setPixmap(QPixmap(":/images/zaba_gotowa.png"));
-
     setPos(388,567);
-    long long time = QDateTime::currentMSecsSinceEpoch();
     this->setData(1,alive);
-
 }
 
 void Frog::levelUp()

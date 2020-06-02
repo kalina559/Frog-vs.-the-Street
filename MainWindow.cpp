@@ -4,6 +4,7 @@
 #include<QObject>
 #include<QMessageBox>
 #include<QInputDialog>
+#include<QDir>
 
 std::unique_ptr<QTimer> MainWindow::timer = nullptr;
 
@@ -23,7 +24,6 @@ MainWindow::MainWindow()
 
     MainWindow::displayMenu(MainWindow::itemType::menuStart);
 
-
     spawnTimer = new QTimer();
 
     auto firstLane = new Lane(this, MainWindow::laneDirection::left, 93);   //adding all the lanes
@@ -32,16 +32,12 @@ MainWindow::MainWindow()
     addToScene(secondLane);
     auto thirdLane = new Lane(this, MainWindow::laneDirection::left, 235);
     addToScene(thirdLane);
-//    auto fourthLane = new Lane(this, MainWindow::laneDirection::right, 365);   //adding all the lanes
-//    addToScene(fourthLane);
-//    auto fifthLane = new Lane(this, MainWindow::laneDirection::right, 437);
-//    addToScene(fifthLane);
-//    auto sixthLane = new Lane(this, MainWindow::laneDirection::right, 505);
-//    addToScene(sixthLane);
-
-
-    //spawnTimer->start(3000);
-
+    auto fourthLane = new Lane(this, MainWindow::laneDirection::right, 365);   //adding all the lanes
+    addToScene(fourthLane);
+    auto fifthLane = new Lane(this, MainWindow::laneDirection::right, 437);
+    addToScene(fifthLane);
+    auto sixthLane = new Lane(this, MainWindow::laneDirection::right, 505);
+    addToScene(sixthLane);
 
     timer = std::make_unique<QTimer>();
     timer.get()->start(50);    
@@ -61,7 +57,6 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()  //called when window is closed
 {
     delete(spawnTimer);
-    std::cout << "~MainWindow has been called" << std::endl;
 }
 
 void MainWindow::displayMenu(MainWindow::itemType type)
@@ -80,19 +75,14 @@ void MainWindow::displayMenu(MainWindow::itemType type)
         menu.get()->setPixmap(QPixmap(":/images/menuPause.png"));
         menu.get()->setData(0,menuPause);
     }
-    else
+    else if(type == menuEnd)
     {
-        std::cout<<"nie pykło"<<std::endl;
-    }    
+        menu.get()->setPixmap(QPixmap(":/images/menuEnd.png"));
+        menu.get()->setData(0,menuEnd);
+    }
     menu->setPos(400 - menu->pixmap().width() / 2, 306 - menu->pixmap().height() / 2);
     addToScene(menu.get());
     addToScene(menuCursor.get());
-}
-
-void MainWindow::removeMenu()
-{
-    scene->removeItem(menu.get());
-    scene->removeItem(menuCursor.get());
 }
 
 void MainWindow::moveCursor(MainWindow::direction dir)
@@ -134,12 +124,6 @@ bool MainWindow::isItemVisible(MainWindow::itemType itemsName)   //checks whethe
     return false;
 }
 
-void MainWindow::resetLevel()
-{
-    level = 1;
-
-}
-
 void MainWindow::increaseScore()
 {
     points += level * 100;
@@ -150,8 +134,9 @@ void MainWindow::increaseScore()
 
 void MainWindow::LoadScores()
 {
-    std::ifstream plik;                //odczyt najlepszych wyników
-    plik.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt");
+    std::ifstream file;                //odczyt najlepszych wyników
+    file.open(std::string(PROJECT_PATH) + "bestScores.txt");
+
     int score = 0;
 
     std::string name;
@@ -159,15 +144,12 @@ void MainWindow::LoadScores()
     QList<int> scores;
     QList<std::string> names;
 
-    while(plik >> name >> score)
+    while(file >> name >> score)
     {
         scores.push_back(score);
         names.push_back(name);
     }
-    for(int i = 0; i < scores.size(); ++i)
-    {
-        std::cout<<names[i]<<scores[i]<<std::endl;
-    }
+
     QString text = nullptr;
     while(!scores.empty())
     {
@@ -180,14 +162,14 @@ void MainWindow::LoadScores()
     msg.setInformativeText(text);
     msg.exec();
 
-    plik.close();
-    plik.clear();
+    file.close();
+    file.clear();
 }
 
 void MainWindow::saveScore()
 {
-    std::ifstream plik;                //odczyt najlepszych wyników
-    plik.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt");
+    std::ifstream file;                //odczyt najlepszych wyników
+    file.open(std::string(PROJECT_PATH) + "bestScores.txt");
 
     int score = 0;
 
@@ -196,7 +178,7 @@ void MainWindow::saveScore()
     QList<int> scores;
     QList<std::string> names;
 
-    while(plik >> name >> score)
+    while(file >> name >> score)
     {
         scores.push_back(score);
         names.push_back(name);
@@ -204,13 +186,10 @@ void MainWindow::saveScore()
 
     if(points > scores.back())
     {
-
         QString playerName = (QInputDialog::getText(this,"Save","Please write your name"));
 
-
         for(int i = 0; i <10; ++i)
-        {
-            std::cout<<names[i]<<scores[i]<<std::endl;
+        {            
             if(this->points > scores[i])
             {
                 names.insert(i, playerName.toStdString());
@@ -233,9 +212,9 @@ void MainWindow::saveScore()
         msg.setInformativeText(text);
         msg.exec();
 
-        plik.close();
-        plik.clear();
-        std::ofstream p;       //zapis do pliku
+        file.close();
+        file.clear();
+        std::ofstream p;       //zapis do fileu
         p.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt", std::ofstream::out|std::ofstream::trunc);
 
         while(!scores.empty())
@@ -246,7 +225,7 @@ void MainWindow::saveScore()
             names.pop_front();
         }
 
-        plik.close();
+        file.close();
         }
 }
 

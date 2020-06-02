@@ -18,7 +18,7 @@ private:
     enum state { dead, alive};
 public:
     Frog(MainWindow *);
-    ~Frog();
+    ~Frog(){}
     void keyPressEvent(QKeyEvent * event); //sterowanie żabą i w menu
     void decreaseLife();
 public slots:
