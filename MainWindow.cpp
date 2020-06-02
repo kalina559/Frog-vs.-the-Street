@@ -4,7 +4,6 @@
 #include<QObject>
 #include<QMessageBox>
 #include<QInputDialog>
-#include<QDir>
 
 std::unique_ptr<QTimer> MainWindow::timer = nullptr;
 
@@ -52,6 +51,14 @@ MainWindow::MainWindow()
     score.get()->setDefaultTextColor(Qt::red);
     score.get()->setPos(280,-12);
     addToScene(score.get());
+
+    playlist = std::make_unique<QMediaPlaylist>();           //usuniete
+    playlist.get()->addMedia(QUrl("qrc:/sounds/muzyka.wav"));
+    playlist.get()->setPlaybackMode(QMediaPlaylist::Loop);
+    music = std::make_unique<QMediaPlayer>();
+    music.get()->setPlaylist(playlist.get());
+    music.get()->setVolume(1);
+    music.get()->play();
 }
 
 MainWindow::~MainWindow()  //called when window is closed
@@ -138,7 +145,6 @@ void MainWindow::LoadScores()
     file.open(std::string(PROJECT_PATH) + "bestScores.txt");
 
     int score = 0;
-
     std::string name;
 
     QList<int> scores;
@@ -158,6 +164,7 @@ void MainWindow::LoadScores()
         names.pop_front();
     }
     QMessageBox msg;
+    msg.setWindowTitle("Records");
     msg.setText("Best scores: ");
     msg.setInformativeText(text);
     msg.exec();
@@ -172,7 +179,6 @@ void MainWindow::saveScore()
     file.open(std::string(PROJECT_PATH) + "bestScores.txt");
 
     int score = 0;
-
     std::string name;
 
     QList<int> scores;
@@ -199,7 +205,6 @@ void MainWindow::saveScore()
                 break;
             }
         }
-
         QString text = nullptr;
 
         for(int i = 0; i < 10; ++i)
@@ -208,6 +213,7 @@ void MainWindow::saveScore()
         }
 
         QMessageBox msg;
+        msg.setWindowTitle("Records");
         msg.setText("Best scores: ");
         msg.setInformativeText(text);
         msg.exec();
@@ -215,7 +221,7 @@ void MainWindow::saveScore()
         file.close();
         file.clear();
         std::ofstream p;       //zapis do fileu
-        p.open("C:/Users/Kalin/QtProjekty/ProjektPJC/bestScores.txt", std::ofstream::out|std::ofstream::trunc);
+        p.open(std::string(PROJECT_PATH) + "bestScores.txt", std::ofstream::out|std::ofstream::trunc);
 
         while(!scores.empty())
         {
@@ -224,7 +230,6 @@ void MainWindow::saveScore()
             scores.pop_front();
             names.pop_front();
         }
-
         file.close();
         }
 }

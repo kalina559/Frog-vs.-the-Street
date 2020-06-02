@@ -11,8 +11,11 @@ private:
     bool paused;
     int lives;  //number of lives, max 3
     std::unique_ptr<QGraphicsPixmapItem> hearts;
-
     std::unique_ptr<QTimer> collDetectionTimer;
+    std::unique_ptr<QMediaPlayer> jumpSound;
+    std::unique_ptr<QMediaPlayer> deathSound;
+    std::unique_ptr<QMediaPlayer> switchSound;
+    std::unique_ptr<QMediaPlayer> endSound;
     void restart();
     void levelUp();
     enum state { dead, alive};

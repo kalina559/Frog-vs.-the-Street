@@ -14,7 +14,9 @@ class Vehicle: public QObject, public QGraphicsPixmapItem     //inherits from QO
 public:
     Vehicle(MainWindow *, MainWindow::laneDirection, int, int);
 
-    ~Vehicle();
+    ~Vehicle()
+    {
+    }
 
     int getVehicleSpeed()
     {

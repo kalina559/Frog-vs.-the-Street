@@ -4,10 +4,8 @@
 
 Vehicle::Vehicle(MainWindow * main, MainWindow::laneDirection dir, int position, int vel):  velocity(vel), direction(dir), mainWindow(main)
 {
-    //std::cout<<"vehicle constr"<< pixmap().width() <<std::endl;
-    auto vehicleType=rand()%20;
+    auto vehicleType=rand() % 20;
 
-    //rysowanie pojazdu (w zależności od pasa)
     if(vehicleType < 7)
         setPixmap(QPixmap(":/images/hotrod.png"));
     else if(vehicleType < 11)
@@ -35,12 +33,6 @@ Vehicle::Vehicle(MainWindow * main, MainWindow::laneDirection dir, int position,
         break;
     }
     connect(MainWindow::timer.get(),SIGNAL(timeout()),this,SLOT(move()));
-}
-
-Vehicle::~Vehicle()
-{
-    //std::cout<<"usunieto furke"<<std::endl;
-
 }
 
 void Vehicle::move()

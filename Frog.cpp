@@ -28,6 +28,20 @@ Frog::Frog(MainWindow * game): mainWindow(game)
     hearts.get()->setPos(10,1);
     mainWindow->addToScene(hearts.get());
 
+    jumpSound = std::make_unique<QMediaPlayer>();
+    deathSound = std::make_unique<QMediaPlayer>();
+    switchSound = std::make_unique<QMediaPlayer>();
+    endSound = std::make_unique<QMediaPlayer>();
+
+    jumpSound.get()->setMedia(QUrl("qrc:/sounds/jump.wav"));
+    jumpSound.get()->setVolume(1);
+    deathSound.get()->setMedia(QUrl("qrc:/sounds/rozjechanie.wav"));
+    deathSound.get()->setVolume(1);
+    switchSound.get()->setMedia(QUrl("qrc:/sounds/switch.wav"));
+    switchSound.get()->setVolume(5);
+    endSound.get()->setMedia(QUrl("qrc:/sounds/death.wav"));
+    endSound.get()->setVolume(1);
+
     paused = false;
 }
 
@@ -40,6 +54,11 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
              mainWindow->isItemVisible(MainWindow::itemType::menuEnd) ||
              data(1) == dead))    //controls outside the menu
         {
+            if(jumpSound.get()->state() == QMediaPlayer::PlayingState)
+                jumpSound.get()->setPosition(0);
+            else if(jumpSound.get()->state() == QMediaPlayer::StoppedState)
+                jumpSound->play();
+
             switch (event->key())
             {
             case Qt::Key_Left:
@@ -66,8 +85,14 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                 break;
             }
         }
-        else  //controls in the menu
+
+        else if (data(1) != dead)  //controls in the menu
         {
+            if(switchSound.get()->state() == QMediaPlayer::PlayingState)
+                switchSound.get()->setPosition(0);
+            else if(switchSound.get()->state() == QMediaPlayer::StoppedState)
+                switchSound->play();
+
             switch (event->key())
             {
             case Qt::Key_Up:
@@ -153,9 +178,10 @@ void Frog::collisionDetection()
             && data(1) == alive)
     {
         for(int i=0; i<collidingItems.size();i++)
-        {
+        {            
             if(collidingItems[i]->data(0) == MainWindow::itemType::vehicle)
             {
+                deathSound.get()->play();
                 this->setPos(this->x()-5, this->y()); // so make the new axis of symmetry match the previous pixmap's
                 this->setPixmap(QPixmap(":/images/przejechana.png"));
                 this->setData(1,dead);
@@ -176,6 +202,7 @@ void Frog::collisionDetection()
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath < 70)      /* resetting difficulty before spawning the frog to
                                                                          allow the slowed down cars to fill the scene*/
     {
+        endSound.get()->play();
         Lane::resetDifficulty();
     }
     else if(data(1) == dead && lives == 0 &&

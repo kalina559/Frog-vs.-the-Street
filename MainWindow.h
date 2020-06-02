@@ -7,6 +7,8 @@
 #include<memory>
 #include<QGraphicsTextItem>
 #include<fstream>
+#include<QMediaPlaylist>
+#include<QMediaPlayer>
 
 class MainWindow : public QGraphicsView
 {
@@ -17,6 +19,9 @@ class MainWindow : public QGraphicsView
     std::unique_ptr<QGraphicsPixmapItem> menu;
     std::unique_ptr<QGraphicsPixmapItem> menuCursor;
     std::unique_ptr<QGraphicsTextItem> score;
+
+    std::unique_ptr<QMediaPlaylist> playlist;
+    std::unique_ptr<QMediaPlayer> music;
 
 public:
     enum itemType {menuStart, menuPause, menuEnd, frog, vehicle};
