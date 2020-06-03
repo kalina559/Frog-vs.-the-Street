@@ -1,22 +1,23 @@
-#include "Frog.h"
+#include "Player.h"
 #include<QKeyEvent>
 #include<iostream>
-#include<MainWindow.h>
+#include<GameWindow.h>
 #include<Vehicle.h>
 #include<QDateTime>
 #include<qstring.h>
 #include<Lane.h>
+#include<Score.h>
 
-Frog::Frog(MainWindow * game): mainWindow(game)
+Player::Player(GameWindow * game): gameWindow(game)
 {
     setPixmap(QPixmap(":/images/zaba_gotowa.png"));
     setPos(388,567);
     setFlag(QGraphicsItem::ItemIsFocusable);
-    setData(0,MainWindow::itemType::frog);
+    setData(0,GameWindow::itemType::frog);
     setData(1,alive);
     setFocus();
 
-    mainWindow->addToScene(this);
+    gameWindow->addToScene(this);
 
     collDetectionTimer = std::make_unique<QTimer>();
     QObject::connect(collDetectionTimer.get(),SIGNAL(timeout()), this, SLOT(collisionDetection()));
@@ -26,7 +27,7 @@ Frog::Frog(MainWindow * game): mainWindow(game)
     hearts = std::make_unique<QGraphicsPixmapItem>();
     hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
     hearts.get()->setPos(10,1);
-    mainWindow->addToScene(hearts.get());
+    gameWindow->addToScene(hearts.get());
 
     jumpSound = std::make_unique<QMediaPlayer>();
     deathSound = std::make_unique<QMediaPlayer>();
@@ -41,17 +42,15 @@ Frog::Frog(MainWindow * game): mainWindow(game)
     switchSound.get()->setVolume(5);
     endSound.get()->setMedia(QUrl("qrc:/sounds/death.wav"));
     endSound.get()->setVolume(1);
-
-    paused = false;
 }
 
-void Frog::keyPressEvent(QKeyEvent *event)   // controls
+void Player::keyPressEvent(QKeyEvent *event)   // controls
 {
     if(!event->isAutoRepeat())
     {
-        if(!(mainWindow->isItemVisible(MainWindow::itemType::menuStart) ||
-             mainWindow->isItemVisible(MainWindow::itemType::menuPause) ||
-             mainWindow->isItemVisible(MainWindow::itemType::menuEnd) ||
+        if(!(gameWindow->isItemVisible(GameWindow::itemType::menuStart) ||
+             gameWindow->isItemVisible(GameWindow::itemType::menuPause) ||
+             gameWindow->isItemVisible(GameWindow::itemType::menuEnd) ||
              data(1) == dead))    //controls outside the menu
         {
             if(jumpSound.get()->state() == QMediaPlayer::PlayingState)
@@ -80,8 +79,7 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
                     setPos(x(), y() + 24);
                 break;
             case Qt::Key_Escape:
-                mainWindow->displayMenu(MainWindow::itemType::menuPause);
-                paused = true;
+                gameWindow->displayMenu(GameWindow::itemType::menuPause);
                 break;
             }
         }
@@ -96,64 +94,64 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
             switch (event->key())
             {
             case Qt::Key_Up:
-                mainWindow->moveCursor(MainWindow::direction::up);
+                gameWindow->moveCursor(GameWindow::direction::up);
                 break;
             case Qt::Key_Down:
-                mainWindow->moveCursor(MainWindow::direction::down);
+                gameWindow->moveCursor(GameWindow::direction::down);
                 break;
             case Qt::Key_Escape:
-                mainWindow->removeMenu();
+                gameWindow->removeMenu();
                 break;
             case Qt::Key_Return:
-                if(mainWindow->isItemVisible(MainWindow::itemType::menuStart))
+                if(gameWindow->isItemVisible(GameWindow::itemType::menuStart))
                 {
-                    mainWindow->removeMenu();
-                    switch(mainWindow->getCursorPosition())
+                    gameWindow->removeMenu();
+                    switch(gameWindow->getCursorPosition())
                     {
                     case 1: //start
                         break;
                     case 2: //best scores
-                        mainWindow->LoadScores();
-                        mainWindow->displayMenu(MainWindow::menuStart);
+                        Score::LoadScores();
+                        gameWindow->displayMenu(GameWindow::menuStart);
                         break;
                     case 3: //exit
-                        mainWindow->close();
+                        gameWindow->close();
                         break;
                     }
                 }
-                else if(mainWindow->isItemVisible(MainWindow::itemType::menuPause))
+                else if(gameWindow->isItemVisible(GameWindow::itemType::menuPause))
                 {
-                    mainWindow->removeMenu();
-                    switch(mainWindow->getCursorPosition())
+                    gameWindow->removeMenu();
+                    switch(gameWindow->getCursorPosition())
                     {
                     case 1: //resume game
                         break;
                     case 2: //return to main menu
-                        mainWindow->displayMenu(MainWindow::itemType::menuStart);
+                        gameWindow->displayMenu(GameWindow::itemType::menuStart);
                         restart();
-                        mainWindow->resetScore();
+                        Score::resetLevel();
                         break;
                     case 3: //exit
-                        mainWindow->close();
+                        gameWindow->close();
                         break;
                     }
                 }
-                else if(mainWindow->isItemVisible(MainWindow::itemType::menuEnd))
+                else if(gameWindow->isItemVisible(GameWindow::itemType::menuEnd))
                 {
-                    mainWindow->removeMenu();
-                    switch(mainWindow->getCursorPosition())
+                    gameWindow->removeMenu();
+                    switch(gameWindow->getCursorPosition())
                     {
                     case 1: //play again
                         restart();
-                        mainWindow->resetScore();
+                        Score::resetLevel();
                         break;
                     case 2: //return to main menu
-                        mainWindow->displayMenu(MainWindow::itemType::menuStart);
+                        gameWindow->displayMenu(GameWindow::itemType::menuStart);
                         restart();
-                        mainWindow->resetScore();
+                        Score::resetLevel();
                         break;
                     case 3: //exit
-                        mainWindow->close();
+                        gameWindow->close();
                         break;
                     }
                 }
@@ -163,23 +161,23 @@ void Frog::keyPressEvent(QKeyEvent *event)   // controls
     }
 }
 
-void Frog::decreaseLife()
+void Player::decreaseLife()
 {
     QString path;
     path = QString::fromStdString(":/images/life") + QString::number(lives) + QString::fromStdString(".png");
     hearts->setPixmap(QPixmap(path));
 }
 
-void Frog::collisionDetection()
+void Player::collisionDetection()
 {
     QList<QGraphicsItem * > collidingItems = this->collidingItems();
-    if(!(mainWindow->isItemVisible(MainWindow::itemType::menuStart)||
-       mainWindow->isItemVisible(MainWindow::itemType::menuStart))
+    if(!(gameWindow->isItemVisible(GameWindow::itemType::menuStart)||
+       gameWindow->isItemVisible(GameWindow::itemType::menuStart))
             && data(1) == alive)
     {
         for(int i=0; i<collidingItems.size();i++)
         {            
-            if(collidingItems[i]->data(0) == MainWindow::itemType::vehicle)
+            if(collidingItems[i]->data(0) == GameWindow::itemType::vehicle)
             {
                 deathSound.get()->play();
                 this->setPos(this->x()-5, this->y()); // so make the new axis of symmetry match the previous pixmap's
@@ -199,7 +197,7 @@ void Frog::collisionDetection()
         setPos(388,567);
     }
     else if(lives == 0 &&
-            QDateTime::currentMSecsSinceEpoch() - timeOfDeath < 70)      /* resetting difficulty before spawning the frog to
+            QDateTime::currentMSecsSinceEpoch() - timeOfDeath < 70)      /* resetting difficulty before spawning the Player to
                                                                          allow the slowed down cars to fill the scene*/
     {
         endSound.get()->play();
@@ -208,26 +206,25 @@ void Frog::collisionDetection()
     else if(data(1) == dead && lives == 0 &&
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 3000)
     {        
-        mainWindow->saveScore();
-        mainWindow->displayMenu(MainWindow::itemType::menuEnd);
+        Score::saveScore();
+        gameWindow->displayMenu(GameWindow::itemType::menuEnd);
         restart();
     }
 }
 
-void Frog::restart()
+void Player::restart()
 {
     lives = 3;
     hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
-    mainWindow->resetScore();
-    mainWindow->resetLevel();
+    Score::resetLevel();
     setPixmap(QPixmap(":/images/zaba_gotowa.png"));
     setPos(388,567);
     this->setData(1,alive);
 }
 
-void Frog::levelUp()
+void Player::levelUp()
 {
-    mainWindow->increaseScore();
+    Score::increaseScore();
     Lane::increaseDifficulty();
     setPos(388,567);
 }

@@ -1,7 +1,7 @@
 #include <QApplication>
-#include<MainWindow.h>
+#include<GameWindow.h>
 #include<iostream>
-#include<Frog.h>
+#include<Player.h>
 #include<Lane.h>
 
 int main(int argc, char *argv[])
@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    auto gameWindow = new MainWindow();
-    auto player = new Frog(gameWindow);
+    auto gameWindow = new GameWindow();
+    auto player = new Player(gameWindow);
 
     gameWindow->setAttribute(Qt::WA_DeleteOnClose);
     gameWindow->show();

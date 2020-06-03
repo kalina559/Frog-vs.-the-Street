@@ -11,9 +11,10 @@ DEFINES += PROJECT_PATH=\"\\\"$${_PRO_FILE_PWD_}/\\\"\"
 CONFIG += c++14
 
 SOURCES += \
-        Frog.cpp \
+        GameWindow.cpp \
         Lane.cpp \
-        MainWindow.cpp \
+        Player.cpp \
+        Score.cpp \
         Vehicle.cpp \
         main.cpp
 
@@ -21,7 +22,8 @@ RESOURCES += \
     resources.qrc
 
 HEADERS += \
-    Frog.h \
+    GameWindow.h \
     Lane.h \
-    MainWindow.h \
+    Player.h \
+    Score.h \
     Vehicle.h
