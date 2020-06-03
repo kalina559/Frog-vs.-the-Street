@@ -53,30 +53,33 @@ void Player::keyPressEvent(QKeyEvent *event)   // controls
              gameWindow->isItemVisible(GameWindow::itemType::menuEnd) ||
              data(1) == dead))    //controls outside the menu
         {
-            if(jumpSound.get()->state() == QMediaPlayer::PlayingState)
-                jumpSound.get()->setPosition(0);
-            else if(jumpSound.get()->state() == QMediaPlayer::StoppedState)
-                jumpSound->play();
-
             switch (event->key())
             {
             case Qt::Key_Left:
                 if(pos().x() > 24)
                     setPos(x() - 24, y());
+                jumpSound.get()->setPosition(0);
+                jumpSound->play();
                 break;
             case Qt::Key_Right:
                 if(pos().x() < 755)
                     setPos(x() + 24, y());
+                jumpSound.get()->setPosition(0);
+                jumpSound->play();
                 break;
             case Qt::Key_Up:
                 if(pos().y() > 0)
                     setPos(x(), y() - 24);
+                jumpSound.get()->setPosition(0);
+                jumpSound->play();
                 if(int(pos().y()) < 0)
                     levelUp();
                 break;
             case Qt::Key_Down:
                 if(pos().y() < 567)
                     setPos(x(), y() + 24);
+                jumpSound.get()->setPosition(0);
+                jumpSound->play();
                 break;
             case Qt::Key_Escape:
                 gameWindow->displayMenu(GameWindow::itemType::menuPause);
@@ -86,18 +89,17 @@ void Player::keyPressEvent(QKeyEvent *event)   // controls
 
         else if (data(1) != dead)  //controls in the menu
         {
-            if(switchSound.get()->state() == QMediaPlayer::PlayingState)
-                switchSound.get()->setPosition(0);
-            else if(switchSound.get()->state() == QMediaPlayer::StoppedState)
-                switchSound->play();
-
             switch (event->key())
             {
             case Qt::Key_Up:
                 gameWindow->moveCursor(GameWindow::direction::up);
+                switchSound.get()->setPosition(0);
+                switchSound->play();
                 break;
             case Qt::Key_Down:
                 gameWindow->moveCursor(GameWindow::direction::down);
+                switchSound.get()->setPosition(0);
+                switchSound->play();
                 break;
             case Qt::Key_Escape:
                 gameWindow->removeMenu();
