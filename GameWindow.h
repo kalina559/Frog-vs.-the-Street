@@ -93,7 +93,7 @@ public:
  * @brief Adds selected menu to the scene.
  * @param type Type of the menu
   */
-    void displayMenu(GameWindow::itemType);
+    void displayMenu(GameWindow::itemType type);
 /**
  * @brief Removes selected menu and menu cursor from the scene.
   */
@@ -106,14 +106,14 @@ public:
      * @brief Changes the position of the menu cursor member.
      * @param dir Direction of the movement
      */
-    void moveCursor(GameWindow::direction);
+    void moveCursor(GameWindow::direction dir);
 
     /**
     * @brief Checks if item of selected itemType is visible in the scene.
     * @param itemsName Type of the item
     * @return True if item is visible, false if not.
     */
-    static bool isItemVisible(GameWindow::itemType);
+    static bool isItemVisible(GameWindow::itemType itemsName);
 
     /**
      * @brief Returns the current position of menu cursor.

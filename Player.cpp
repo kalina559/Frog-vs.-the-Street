@@ -10,7 +10,7 @@
 
 Player::Player(GameWindow * game): gameWindow(game)
 {
-    setPixmap(QPixmap(":/images/zaba_gotowa.png"));
+    setPixmap(QPixmap(":/resources/images/zaba_gotowa.png"));
     setPos(388,567);
     setFlag(QGraphicsItem::ItemIsFocusable);
     setData(0,GameWindow::itemType::frog);
@@ -25,7 +25,7 @@ Player::Player(GameWindow * game): gameWindow(game)
 
     lives = 3;
     hearts = std::make_unique<QGraphicsPixmapItem>();
-    hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
+    hearts.get()->setPixmap(QPixmap(":/resources/images/life3.png"));
     hearts.get()->setPos(10,1);
     gameWindow->addToScene(hearts.get());
 
@@ -34,13 +34,13 @@ Player::Player(GameWindow * game): gameWindow(game)
     switchSound = std::make_unique<QMediaPlayer>();
     endSound = std::make_unique<QMediaPlayer>();
 
-    jumpSound.get()->setMedia(QUrl("qrc:/sounds/jump.wav"));
+    jumpSound.get()->setMedia(QUrl("qrc:/resources/sounds/jump.wav"));
     jumpSound.get()->setVolume(1);
-    deathSound.get()->setMedia(QUrl("qrc:/sounds/rozjechanie.wav"));
+    deathSound.get()->setMedia(QUrl("qrc:/resources/sounds/rozjechanie.wav"));
     deathSound.get()->setVolume(1);
-    switchSound.get()->setMedia(QUrl("qrc:/sounds/switch.wav"));
+    switchSound.get()->setMedia(QUrl("qrc:/resources/sounds/switch.wav"));
     switchSound.get()->setVolume(5);
-    endSound.get()->setMedia(QUrl("qrc:/sounds/death.wav"));
+    endSound.get()->setMedia(QUrl("qrc:/resources/sounds/death.wav"));
     endSound.get()->setVolume(1);
 }
 
@@ -166,7 +166,7 @@ void Player::keyPressEvent(QKeyEvent *event)   // controls
 void Player::decreaseLife()
 {
     QString path;
-    path = QString::fromStdString(":/images/life") + QString::number(lives) + QString::fromStdString(".png");
+    path = QString::fromStdString(":/resources/images/life") + QString::number(lives) + QString::fromStdString(".png");
     hearts->setPixmap(QPixmap(path));
 }
 
@@ -183,7 +183,7 @@ void Player::collisionDetection()
             {
                 deathSound.get()->play();
                 this->setPos(this->x()-5, this->y()); // so make the new axis of symmetry match the previous pixmap's
-                this->setPixmap(QPixmap(":/images/przejechana.png"));
+                this->setPixmap(QPixmap(":/resources/images/przejechana.png"));
                 this->setData(1,dead);
                 timeOfDeath = QDateTime::currentMSecsSinceEpoch();
                 --lives;
@@ -194,7 +194,7 @@ void Player::collisionDetection()
     else if(data(1) == dead && lives > 0 &&
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 1000)
     {
-        setPixmap(QPixmap(":/images/zaba_gotowa.png"));
+        setPixmap(QPixmap(":/resources/images/zaba_gotowa.png"));
         this->setData(1,alive);
         setPos(388,567);
     }
@@ -208,6 +208,7 @@ void Player::collisionDetection()
     else if(data(1) == dead && lives == 0 &&
             QDateTime::currentMSecsSinceEpoch() - timeOfDeath > 3000)
     {        
+        qDebug() << "before save";
         Score::saveScore();
         gameWindow->displayMenu(GameWindow::itemType::menuEnd);
         restart();
@@ -217,9 +218,9 @@ void Player::collisionDetection()
 void Player::restart()
 {
     lives = 3;
-    hearts.get()->setPixmap(QPixmap(":/images/life3.png"));
+    hearts.get()->setPixmap(QPixmap(":/resources/images/life3.png"));
     Score::resetLevel();
-    setPixmap(QPixmap(":/images/zaba_gotowa.png"));
+    setPixmap(QPixmap(":/resources/images/zaba_gotowa.png"));
     setPos(388,567);
     this->setData(1,alive);
 }

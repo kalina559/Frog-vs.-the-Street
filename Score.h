@@ -17,7 +17,7 @@ public:
      * @param game GameWindow class instance that initialized Score class instance.
      * @param text QGraphicsTextItem class instance that the Score class instance operates on.
      */
-    Score(GameWindow *, QGraphicsTextItem *);
+    Score(GameWindow* game, QGraphicsTextItem* text);
     /**
      * @brief Adds points to the score and updates the gameScore member.
      */

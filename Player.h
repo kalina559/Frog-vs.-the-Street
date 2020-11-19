@@ -47,7 +47,6 @@ public:
     Player(GameWindow *);
     /**
      * @brief Used to control the Player class instance and to move around in the menus.
-     * @param event
      */
     void keyPressEvent(QKeyEvent * event);
     /**

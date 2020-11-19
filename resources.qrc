@@ -1,29 +1,27 @@
 <RCC>
-    <qresource prefix="/sounds">
-        <file>start.wav</file>
-        <file>death.wav</file>
-        <file>muzyka.wav</file>
-        <file>jump.wav</file>
-        <file>rozjechanie.wav</file>
-        <file>switch.wav</file>
-    </qresource>
-    <qresource prefix="/images">
-        <file>truck.png</file>
-        <file>taxi.png</file>
-        <file>przejechana.png</file>
-        <file>police1.png</file>
-        <file>police.png</file>
-        <file>life3.png</file>
-        <file>life2.png</file>
-        <file>life1.png</file>
-        <file>hotrod.png</file>
-        <file>bike.png</file>
-        <file>zaba_gotowa.png</file>
-        <file>tlopaint.png</file>
-        <file>tlożaba.png</file>
-        <file>menuEnd.png</file>
-        <file>menuPause.png</file>
-        <file>menuStart.png</file>
-        <file>cursor.png</file>
+    <qresource prefix="/">
+        <file>resources/images/bike.png</file>
+        <file>resources/images/cursor.png</file>
+        <file>resources/images/hotrod.png</file>
+        <file>resources/images/life1.png</file>
+        <file>resources/images/life2.png</file>
+        <file>resources/images/life3.png</file>
+        <file>resources/images/menuEnd.png</file>
+        <file>resources/images/menuPause.png</file>
+        <file>resources/images/menuStart.png</file>
+        <file>resources/images/police.png</file>
+        <file>resources/images/police1.png</file>
+        <file>resources/images/przejechana.png</file>
+        <file>resources/images/taxi.png</file>
+        <file>resources/images/tlopaint.png</file>
+        <file>resources/images/tlożaba.png</file>
+        <file>resources/images/truck.png</file>
+        <file>resources/images/zaba_gotowa.png</file>
+        <file>resources/sounds/death.wav</file>
+        <file>resources/sounds/jump.wav</file>
+        <file>resources/sounds/muzyka.wav</file>
+        <file>resources/sounds/rozjechanie.wav</file>
+        <file>resources/sounds/start.wav</file>
+        <file>resources/sounds/switch.wav</file>
     </qresource>
 </RCC>

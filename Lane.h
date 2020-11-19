@@ -16,10 +16,10 @@ class Lane: public QObject, public QGraphicsPixmapItem
     /**
      * @brief Used to draw random speed of the generated instances of Vehicle class.
      * @param minSpeed Minimal speed
-     * @param max Speed Maximal speed
+     * @param maxSpeed Maximal speed
      * @return Random speed assigned to new Vehicle class instance
      */
-    int randomSpeed(int, int);
+    int randomSpeed(int minSpeed, int maxSpeed);
     QList<Vehicle *> currentVehicles; /**< List of all Vehicle class instances on Lane class instance.*/
     std::unique_ptr<QTimer> deleteTimer; /**< Holds a QTimer.
 \details Used by Lane class instance as a signal connected to slot Lane::deleteOutOfScene()*/
@@ -32,7 +32,7 @@ public:
      * @param dir Direction of the Vehicle class instances' movement.
      * @param lane Lane class instance position on the gameWindow->scene.
      */
-    Lane(GameWindow *, GameWindow::laneDirection, int);
+    Lane(GameWindow* game, GameWindow::laneDirection dir, int lane);
     /**
      * @brief Returns the Y-position of the Lane class instance on the gameWindow->scene.
      * @return Y-position of the Lane class instance on the gameWindow->scene.

@@ -17,11 +17,12 @@ GameWindow::GameWindow()
 
     scene = std::make_unique<QGraphicsScene>(new QGraphicsScene);
     scene->setSceneRect(0, 0, 800, 600);
-    setBackgroundBrush(QBrush(QImage(":/images/tlopaint.png")));
+    setBackgroundBrush(QBrush(QImage(":/resources/images/tlopaint.png")));
     setScene(scene.get());
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFixedSize(800, 600);
+    setMinimumSize(200,200);
 
     GameWindow::displayMenu(GameWindow::itemType::menuStart);
 
@@ -47,7 +48,7 @@ GameWindow::GameWindow()
     auto score = std::make_unique<Score>(this, gameScore.get());    //instance of a helper class
 
     playlist = std::make_unique<QMediaPlaylist>();           //usuniete
-    playlist.get()->addMedia(QUrl("qrc:/sounds/muzyka.wav"));
+    playlist.get()->addMedia(QUrl("qrc:/resources/sounds/muzyka.wav"));
     playlist.get()->setPlaybackMode(QMediaPlaylist::Loop);
     music = std::make_unique<QMediaPlayer>();
     music.get()->setPlaylist(playlist.get());
@@ -62,23 +63,23 @@ GameWindow::~GameWindow()  //called when window is closed
 
 void GameWindow::displayMenu(GameWindow::itemType type)
 {
-    menuCursor->setPixmap(QPixmap(":/images/cursor.png"));
+    menuCursor->setPixmap(QPixmap(":/resources/images/cursor.png"));
     menuCursor->setPos(400 - menuCursor->pixmap().width() / 2, 150);
     cursorPosition = 1;
 
     if(type == menuStart)
     {
-        GameWindow::menu.get()->setPixmap(QPixmap(":/images/menuStart.png"));
+        GameWindow::menu.get()->setPixmap(QPixmap(":/resources/images/menuStart.png"));
         menu.get()->setData(0,menuStart);
     }
     else if(type == menuPause)
     {
-        menu.get()->setPixmap(QPixmap(":/images/menuPause.png"));
+        menu.get()->setPixmap(QPixmap(":/resources/images/menuPause.png"));
         menu.get()->setData(0,menuPause);
     }
     else if(type == menuEnd)
     {
-        menu.get()->setPixmap(QPixmap(":/images/menuEnd.png"));
+        menu.get()->setPixmap(QPixmap(":/resources/images/menuEnd.png"));
         menu.get()->setData(0,menuEnd);
     }
     menu->setPos(400 - menu->pixmap().width() / 2, 306 - menu->pixmap().height() / 2);

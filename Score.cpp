@@ -63,6 +63,7 @@ void Score::LoadScores()
 
 void Score::saveScore()
 {
+
     std::ifstream file;                //odczyt najlepszych wyników
     file.open(std::string(PROJECT_PATH) + "bestScores.txt");
 
