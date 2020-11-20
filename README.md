@@ -3,7 +3,21 @@ C++ game developed in Qt
 =============
 Gameplay
 -------------
-Player's goal is to collect as many points as possible - they are earned every time the player manages to cross the street. Each level is worth n * 100 points, n being the level number. Player has 3 lives, after losing them all the game restarts. Best scores are stored in a scoreboard.
+Player's goal is to collect as many points as possible - they are earned every time the player manages to cross the street. Each level is worth n * 100 points, n being the level number. Player has 3 lives, after losing all of them the game restarts. Best scores are stored in a scoreboard.
+Controls
+-------------
+- in-game
+  - 🡡 : up 
+  - 🡣 : down 
+  - 🡠 : left
+  - 🡢 : right
+  - esc : pause
+- in menu
+  - 🡡 : up 
+  - 🡣 : down 
+  - esc : resume
+  - enter : choose option
+
 
 Documentation
 -------------
