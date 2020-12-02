@@ -1,5 +1,7 @@
 C++ game developed in Qt
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+![gameScreen](https://github.com/kalina559/Frog-vs.-the-Street-Documentation/blob/main/pjc.png?raw=true)
 =============
 Gameplay
 -------------
